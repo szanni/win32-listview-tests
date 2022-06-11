@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
+#include <assert.h>
 
 #define ID_LISTVIEW 1337
 #define NROWS 5
@@ -11,72 +12,14 @@
 HINSTANCE _instance = NULL;
 const char _name[] = "Simple List View";
 
-void
-PrintState(UINT state)
-{
-	if (state & LVIS_ACTIVATING)
-		printf("LVIS_ACTIVATING ");
-	if (state & LVIS_CUT)
-		printf("LVIS_CUT ");
-	if (state & LVIS_DROPHILITED)
-		printf("LVIS_DROPHILITED ");
-	if (state & LVIS_FOCUSED)
-		printf("LVIS_FOCUSED ");
-	if (state & LVIS_OVERLAYMASK)
-		printf("LVIS_OVERLAYMASK ");
-	if (state & LVIS_SELECTED)
-		printf("LVIS_SELECTED ");
-	if (state & LVIS_STATEIMAGEMASK)
-		printf("LVIS_STATEIMAGEMASK ");
-}
-
-#define PrintStates(...) do {\
-	printf(__VA_ARGS__);\
-	printf(" uOldState: ");\
-	PrintState(nm->uOldState);\
-	printf("uNewState: ");\
-	PrintState(nm->uNewState);\
-	printf("\n");\
-} while(0)
-
 LRESULT
 ListViewNotify(HWND hwnd, LPARAM lParam)
 {
 	(void)hwnd;
 	LPNMHDR lpnmh = (LPNMHDR) lParam;
-	//HWND lv = GetDlgItem(hwnd, ID_LISTVIEW);
 
-	switch(lpnmh->code)
-	{
-	case LVN_ITEMCHANGED:
-	{
-		NMLISTVIEW *nm = (NMLISTVIEW *) lpnmh;
-		PrintStates("LVN_ITEMCHANGED: %d", nm->iItem);
-		break;
-	}
-	case LVN_ODSTATECHANGED:
-	{
-		NMLVODSTATECHANGE *nm = (NMLVODSTATECHANGE *) lpnmh;
-		PrintStates("LVN_ODSTATECHANGED: %d - %d", nm->iFrom, nm->iTo);
-		break;
-	}
-	case LVN_ODCACHEHINT:
-	{
-		NMLVCACHEHINT *nm = (NMLVCACHEHINT *) lpnmh;
-		printf("LVN_ODCACHEHINT: %d - %d\n", nm->iFrom, nm->iTo);
-		break;
-	}
-	case LVN_GETDISPINFOA:
-	{
-		NMLVDISPINFOA *nm = (NMLVDISPINFOA *) lpnmh;
-		LVITEMA item = nm->item;
-		printf("LVN_GETDISPINFOA: %d\n", item.iItem);
-		break;
-	}
-	default:
-		//printf("CODE: %d\n", lpnmh->code);
-		break;
-	}
+	assert(lpnmh->code != LVN_ODSTATECHANGED);
+
 	return 0;
 }
 
