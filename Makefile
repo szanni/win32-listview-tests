@@ -4,10 +4,12 @@ CC = x86_64-w64-mingw32-gcc
 CFLAGS = -std=c99 -Wall -Wextra -pedantic
 LDFLAGS = -lcomctl32
 
-all: simple.exe
+BIN = simple.exe print-notify.exe
+
+all: ${BIN}
 
 clean:
-	rm -f simple.exe
+	rm -f ${BIN}
 
 %.exe: %.c
 	${CC} ${CFLAGS} $^ -o $@ ${LDFLAGS}
